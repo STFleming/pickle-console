@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var width  = 1024;
+            var height = 1024;
+
+            var question = new Array(5); // contains the question being asked -- five circle colours
+            var seq = 0; // stores where we are in the sequence of answering the question
+
+            var invalid_a = new Audio('audio/invalid.mp3');
+            var correct_a = new Audio('audio/correct.mp3');
+            var red_a = new Audio('audio/do.mp3');
+            var green_a = new Audio('audio/re.mp3');
+            var blue_a = new Audio('audio/mi.mp3');
+
+            var question_xbase = 250;
+            var question_ybase = 100;
+            var question_size = 50;
+            var question_spacing = 150;
+
+            var question_load_delay = 250;
+            var question_load_interval = 750;
+            var question_light_up_time = 300;
+
+            var switch_colours = [ 'red', 'blue', 'green' ]; // the list of switch colours available
+
+            function randColour(pos) {
+               // pos is the position of the circle being lit up
+	       var randcolour = switch_colours[Math.floor(Math.random()*switch_colours.length)]; 
+	       switch(randcolour) {
+		       case 'red': 
+			       question[pos] = 'red';
+			       setTimeout(function() {red_a.play(); }, question_load_delay + pos*question_load_interval);
+			       return 'FireBrick';
+		       break;
+		 
+		       case 'blue': 
+			       question[pos] = 'blue';
+			       setTimeout(function() {blue_a.play(); }, question_load_delay + pos*question_load_interval);
+                               return 'DodgerBlue';
+		       break;
+			       
+		       case 'green':
+			       question[pos] = 'green';
+			       setTimeout(function() {green_a.play(); }, question_load_delay + pos*question_load_interval);
+			       return 'ForestGreen';
+                       break;
+	       }
+	    }
+
+            // setup the canvas
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", width)
+                        .attr("height", height); 
+
+
+            // draw out the question circles
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "quest_0")
+              .attr("cx", question_xbase)
+              .attr("cy", question_ybase)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey")
+              .transition()
+              .delay(question_load_delay)
+              .duration(question_light_up_time)
+	      .attr("fill", function() {return randColour(0);});
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "quest_1")
+              .attr("cx", question_xbase + (1*question_spacing))
+              .attr("cy", question_ybase)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey")
+              .transition()
+              .delay(question_load_delay + (1*question_load_interval))
+              .duration(question_light_up_time)
+	      .attr("fill", function() {return randColour(1);});
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "quest_2")
+              .attr("cx", question_xbase + (2*question_spacing))
+              .attr("cy", question_ybase)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey")
+              .transition()
+              .delay(question_load_delay + (2*question_load_interval))
+              .duration(question_light_up_time )
+	      .attr("fill", function() {return randColour(2);});
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "quest_3")
+              .attr("cx", question_xbase + (3*question_spacing))
+              .attr("cy", question_ybase)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey")
+              .transition()
+              .delay(question_load_delay + (3*question_load_interval))
+              .duration(question_light_up_time)
+	      .attr("fill", function() {return randColour(3);});
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "quest_4")
+              .attr("cx", question_xbase + (4*question_spacing))
+              .attr("cy", question_ybase)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey")
+              .transition()
+              .delay(question_load_delay + (4*question_load_interval))
+              .duration(question_light_up_time)
+	      .attr("fill", function() {return randColour(4);});
+              
+
+            // draw out the answer circles
+            var ans_y_offset = 200;
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "ans_0")
+              .attr("cx", question_xbase)
+              .attr("cy", question_ybase + ans_y_offset)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey");
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "ans_1")
+              .attr("cx", question_xbase + (1*question_spacing))
+              .attr("cy", question_ybase + ans_y_offset)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey");
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "ans_2")
+              .attr("cx", question_xbase + (2*question_spacing))
+              .attr("cy", question_ybase + ans_y_offset)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey");
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "ans_3")
+              .attr("cx", question_xbase + (3*question_spacing))
+              .attr("cy", question_ybase + ans_y_offset)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey");
+
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "ans_4")
+              .attr("cx", question_xbase + (4*question_spacing))
+              .attr("cy", question_ybase + ans_y_offset)
+              .attr("r", question_size)
+              .attr("fill", "LightGrey");
+
+
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		switch (event.data) {
+                   case "r1":
+			        if(question[seq] == 'red') {
+				    d3.select("#ans_"+String(seq))
+				      .transition()
+				      .duration(question_light_up_time)
+				      .attr("fill", "FireBrick");
+				    seq++;
+		                    red_a.play();
+				} else {
+				    invalid_a.play();
+				}
+		   break;
+
+		   case "r0":
+		   break;
+
+		   case "g1":
+			        if(question[seq] == 'green') {
+				    d3.select("#ans_"+String(seq))
+				      .transition()
+				      .duration(question_light_up_time)
+				      .attr("fill", "ForestGreen");
+				    seq++;
+			            green_a.play();
+				} else {
+				    invalid_a.play();
+				}
+		   break;
+
+		   case "g0":
+		   break;
+
+		   case "b1":
+			        if(question[seq] == 'blue') {
+				    d3.select("#ans_"+String(seq))
+				      .transition()
+				      .duration(question_light_up_time)
+				      .attr("fill", "DodgerBlue");
+				    seq++;
+				    blue_a.play();
+				} else {
+				    invalid_a.play();
+				}
+		   break;
+
+		   case "b0":
+		   break;
+
+		   default:
+			console.log("Error: unknown command from the console");
+		}
+
+		if(seq == 5){
+			setTimeout(function() {correct_a.play();} , 250);
+		}
+            }
+
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+
+             // end condition -- after 30 seconds load a new page
+             // disable the timeout for now
+             //setTimeout( function() {
+             //                         var page = pages[Math.floor(Math.random()*pages.length)];
+             //                         while(page == 'pattern-match.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+             //                         document.location.href = page;
+             //                       }, 30000);
+
+
+        </script>
+
+    </body>
+</html>
