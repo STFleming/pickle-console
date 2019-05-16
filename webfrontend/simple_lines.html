@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		var re = new RegExp(".?1");
+		if(re.test(event.data)) { // Only do it if we are pressing the switch down not releasing
+		    d3.select("#canvas")
+		      .append("line")
+		      .attr("x1", Math.floor((Math.random() * 900) + 50))
+		      .attr("y1", Math.floor((Math.random() * 900) + 50))
+		      .attr("x2", Math.floor((Math.random() * 900) + 50))
+		      .attr("y2", Math.floor((Math.random() * 900) + 50))
+		      .style("stroke-width", Math.floor((Math.random() * 10)))
+		      .style("stroke", function() { 
+		    	  if(event.data == "r1") 
+		    		  return "red";
+		    	  else if (event.data == "g1")
+		    		  return "green";
+		    	  else if (event.data == "b1")
+		    		  return "blue";
+		     });
+	         }
+            }
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+
+            // setup the canvas
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", 2048)
+                        .attr("height", 1024); 
+
+             // end condition -- after 30 seconds load a new page
+             setTimeout( function() {
+                                      var page = pages[Math.floor(Math.random()*pages.length)];
+                                      while(page == 'simple_lines.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+                                      document.location.href = page;
+                                    }, 10000);
+
+        </script>
+
+    </body>
+</html>

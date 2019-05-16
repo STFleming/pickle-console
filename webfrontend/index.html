@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var width  = 1024;
+            var height = 1024;
+
+	    var text_loc_x = width/2;
+            var text_loc_y = height/2;
+
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            var msg = ['d', 'y', 'l', 'a', 'n'];
+            var seq_cnt = 0; // counts where we are in the sequence
+
+            // audio files 
+            var d_audio = new Audio('audio/d.mp3');
+            var y_audio = new Audio('audio/y.mp3');
+            var l_audio = new Audio('audio/l.mp3');
+            var a_audio = new Audio('audio/a.mp3');
+            var n_audio = new Audio('audio/n.mp3');
+            var complete_audio = new Audio('audio/dylan.mp3');
+            var complete_audio_played = false;
+
+
+            // setup the canvas -- displaying the message
+            var canvas = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", width)
+                        .attr("height", height);
+
+            var letter_start = 450;
+            var letter_offset = 120;
+            var letter_size = "256px";
+            var letter_fontfam = "helvetica";
+            var letter_fill = "LightGrey"
+
+            function play_audio() {
+                switch(msg[seq_cnt]) {
+                    case 'd': 
+                        d_audio.play();
+		    break;
+
+                    case 'y': 
+                        y_audio.play();
+		    break;
+
+                    case 'l': 
+                        l_audio.play();
+		    break;
+
+                    case 'a': 
+                        a_audio.play();
+		    break;
+
+                    case 'n': 
+                        n_audio.play();
+		    break;
+		}
+	    }
+
+            // D Y L A N
+            canvas.append("text")
+                .attr("id", "letter_d")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("d");
+
+            canvas.append("text")
+                .attr("id", "letter_y")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 1) + 20)
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("y");
+
+            canvas.append("text")
+                .attr("id", "letter_l")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("l");
+
+            canvas.append("text")
+                .attr("id", "letter_a")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 3) - 20)
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("a");
+
+            canvas.append("text")
+                .attr("id", "letter_n")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("n");
+
+                
+            var nudge_up_time = 300;
+            var hold_up_time = 50;
+            var come_down_time = 300;
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		if(seq_cnt < msg.length) {
+		    switch (event.data) {
+                       case "r1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+		             .attr("y", height/2 - 50)
+		             .attr("fill", "FireBrick")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+		             .attr("y", height/2);
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "r0":
+		            // do nothing
+		       break;
+
+		       case "g1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+		             .attr("y", height/2 - 50)
+		             .attr("fill", "ForestGreen")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+		             .attr("y", height/2);
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "g0":
+		           // do nothing
+		       break;
+
+		       case "b1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+		             .attr("y", height/2 - 50)
+		             .attr("fill", "DodgerBlue")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+		             .attr("y", height/2);
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "b0":
+		           // do nothing
+		       break;
+
+		       default:
+		    	console.log("Error: unknown command from the console");
+		    }
+
+		    // animation to pop each letter at the end
+		    if(seq_cnt == (msg.length)) {
+			 //setInterval(function() { if(!complete_audio_played) { complete_audio.play(); complete_audio_played=true; }}, 50 );
+			 var end_animation_delay = 500;
+			 var animation_letter_rate = 150;
+                         d3.select('#letter_d')
+			   .transition()
+			   .delay(end_animation_delay)
+			   .duration(nudge_up_time)
+		           .attr("y", function() { complete_audio.play(); return height/2 - 50; })
+		           .transition()
+		           .delay(hold_up_time)
+			   .duration(come_down_time)
+		           .attr("y", height/2)
+		           .attr("fill", "LightGrey");
+
+                         d3.select('#letter_y')
+			   .transition()
+			   .delay(end_animation_delay + animation_letter_rate*1)
+			   .duration(nudge_up_time)
+		           .attr("y", height/2 - 50)
+		           .transition()
+		           .delay(hold_up_time)
+			   .duration(come_down_time)
+		           .attr("y", height/2)
+		           .attr("fill", "LightGrey");
+
+                         d3.select('#letter_l')
+			   .transition()
+			   .delay(end_animation_delay + animation_letter_rate*2)
+			   .duration(nudge_up_time)
+		           .attr("y", height/2 - 50)
+		           .transition()
+		           .delay(hold_up_time)
+			   .duration(come_down_time)
+		           .attr("y", height/2)
+		           .attr("fill", "LightGrey");
+
+                         d3.select('#letter_a')
+			   .transition()
+			   .delay(end_animation_delay + animation_letter_rate*3)
+			   .duration(nudge_up_time)
+		           .attr("y", height/2 - 50)
+		           .transition()
+		           .delay(hold_up_time)
+			   .duration(come_down_time)
+		           .attr("y", height/2)
+		           .attr("fill", "LightGrey");
+			   
+                         d3.select('#letter_n')
+			   .transition()
+			   .delay(end_animation_delay + animation_letter_rate*4)
+			   .duration(nudge_up_time)
+		           .attr("y", height/2 - 50)
+		           .transition()
+		           .delay(hold_up_time)
+			   .duration(come_down_time)
+		           .attr("y", height/2)
+		           .attr("fill", "LightGrey");
+
+			   // reset the seq count after a period of time
+			   //setTimeout(function() { seq_cnt = 0; complete_audio_played=false; }, end_animation_delay + animation_letter_rate*6);
+
+			   // change navigation to a random page after a set amount of time at the end of the sequence
+			   setTimeout(function() {  var page = pages[Math.floor(Math.random()*pages.length)];
+	                                            while(page == 'index.html') { pages[Math.floor(Math.random()*pages.length)]; }
+	                                            document.location.href = page; 
+	                                         }, end_animation_delay + animation_letter_rate*6);
+		    }
+		}
+            }
+
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+
+
+        </script>
+
+    </body>
+</html>

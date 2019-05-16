@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var width  = 1024;
+            var height = 1024;
+
+	    // variables tracking the switch states
+	    var red_s = false;
+            var green_s = false;
+            var blue_s = false;
+
+            // colour values for each circle
+            var red_c = 1;
+            var green_c = 1;
+            var blue_c = 1;
+
+            // direction -- increasing colour intensity or decreasing
+            var red_toggle =  1;
+            var green_toggle = 1; 
+            var blue_toggle = 1;
+
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		switch (event.data) {
+                   case "r1":
+			red_s = true;
+		   break;
+
+		   case "r0":
+			red_s = false;
+		   break;
+
+		   case "g1":
+			green_s = true;
+		   break;
+
+		   case "g0":
+			green_s = false;
+		   break;
+
+		   case "b1":
+			blue_s = true;
+		   break;
+
+		   case "b0":
+			blue_s = false;
+		   break;
+
+		   default:
+			console.log("Error: unknown command from the console");
+		}
+            }
+
+            //periodically create a random circle for each colour switch that is active
+            var intervalId = setInterval(addColour, 5);
+
+            function addColour() {
+		    // add some red circles
+		    if(red_s) {
+			if(red_c >= 256 || red_c <= 0)
+			    red_toggle = red_toggle * -1;
+			red_c = red_c + 4*red_toggle;
+			d3.select("#red_circle")
+			  .style("fill", function () { return "rgb("+String(red_c)+",0,0)"; });
+		    }
+
+		    // add some green circles
+		    if(green_s) {
+			if(green_c >= 256 || green_c <= 0)
+			    green_toggle = green_toggle * -1;
+			green_c = green_c + 4*green_toggle;
+			d3.select("#green_circle")
+			  .style("fill", function () { return "rgb(0,"+String(green_c)+",0)"; });
+		    }
+
+		    // add some blue circles
+		    if(blue_s) {
+			if(blue_c >= 256 || blue_c <= 0)
+			    blue_toggle = blue_toggle * -1;
+			blue_c = blue_c + 4*blue_toggle;
+			d3.select("#blue_circle")
+			  .style("fill", function () { return "rgb(0,0,"+String(blue_c)+")"; });
+		    }
+	    }
+
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+            var circle_start = 400;
+            var circle_size = 250;
+           
+            // setup the canvas
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", width)
+                        .attr("height", height); 
+
+           // add the three circles to the canvas
+           d3.select("#canvas")
+             .append("circle")
+             .attr("id", "red_circle")
+             .attr("cx", circle_start)
+             .attr("cy", circle_start)
+             .attr("r", circle_size)
+             .style("opacity", "0.5")
+             .attr("stroke-width", 3)
+             .attr("stroke", "black")
+             .style("fill", "rgb("+String(red_c)+",0,0)");
+
+           d3.select("#canvas")
+             .append("circle")
+             .attr("id", "green_circle")
+             .attr("cx", circle_start + circle_size*0.75)
+             .attr("cy", circle_start)
+             .attr("r", circle_size)
+             .style("opacity", "0.5")
+             .attr("stroke-width", 3)
+             .attr("stroke", "black")
+             .style("fill", "rgb(0,"+String(green_c)+",0)");
+
+           d3.select("#canvas")
+             .append("circle")
+             .attr("id", "blue_circle")
+             .attr("cx", circle_start + (3*circle_size/8))
+             .attr("cy", circle_start + (3*circle_size/4))
+             .attr("r", circle_size)
+             .style("opacity", "0.5")
+             .attr("stroke-width", 3)
+             .attr("stroke", "black")
+             .style("fill", "rgb(0,0,"+String(blue_c)+")");
+
+             // end condition -- after 30 seconds load a new page
+             setTimeout( function() { 
+                                      var page = pages[Math.floor(Math.random()*pages.length)];
+                                      while(page == 'colour_mixer.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+                                      document.location.href = page;
+		                    }, 10000); 
+
+        </script>
+
+    </body>
+</html>

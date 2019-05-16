@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var width  = 1024;
+            var height = 1024;
+
+	    // variables tracking the switch states
+	    var red_s = false;
+            var green_s = false;
+            var blue_s = false;
+
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		switch (event.data) {
+                   case "r1":
+			red_s = true;
+		   break;
+
+		   case "r0":
+			red_s = false;
+		   break;
+
+		   case "g1":
+			green_s = true;
+		   break;
+
+		   case "g0":
+			green_s = false;
+		   break;
+
+		   case "b1":
+			blue_s = true;
+		   break;
+
+		   case "b0":
+			blue_s = false;
+		   break;
+
+		   default:
+			console.log("Error: unknown command from the console");
+		}
+            }
+
+            //periodically create a random circle for each colour switch that is active
+            var intervalId = setInterval(addCircles, 10);
+
+            function addCircles() {
+		    // add some red circles
+		    if(red_s) {
+			d3.select("#canvas").append("circle")
+			  .attr("cx", Math.floor((Math.random() * width)))
+			  .attr("cy", Math.floor((Math.random() * height)))
+			  .attr("r", 10)
+		          .style("fill", "red");
+		    }
+
+		    // add some green circles
+		    if(green_s) {
+			d3.select("#canvas").append("circle")
+			  .attr("cx", Math.floor((Math.random() * width)))
+			  .attr("cy", Math.floor((Math.random() * height)))
+			  .attr("r", 10)
+		          .style("fill", "green");
+		    }
+
+		    // add some blue circles
+		    if(blue_s) {
+			d3.select("#canvas").append("circle")
+			  .attr("cx", Math.floor((Math.random() * width)))
+			  .attr("cy", Math.floor((Math.random() * height)))
+			  .attr("r", 10)
+		          .style("fill", "blue");
+		    }
+	    }
+
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+
+            // setup the canvas
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", width)
+                        .attr("height", height); 
+
+             // end condition -- after 30 seconds load a new page
+             setTimeout( function() {
+                                      var page = pages[Math.floor(Math.random()*pages.length)];
+                                      while(page == 'measles.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+                                      document.location.href = page;
+                                    }, 10000);
+
+
+        </script>
+
+    </body>
+</html>

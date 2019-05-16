@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <script src="https://d3js.org/d3.v4.min.js"></script>
+       <script src="pages.js"></script>
+    </head>
+    <body>
+
+        <script>
+            var width  = 1024;
+            var height = 1024;
+
+	    var text_loc_x = width/2;
+            var text_loc_y = height/2;
+
+            var socket = new WebSocket("ws://192.168.0.24:8888");
+
+            var msg = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+            var seq_cnt = 0; // counts where we are in the sequence
+
+            // audio files 
+            var a_audio = new Audio('audio/a.mp3');
+            var b_audio = new Audio('audio/b.mp3');
+            var c_audio = new Audio('audio/c.mp3');
+            var d_audio = new Audio('audio/d.mp3');
+            var e_audio = new Audio('audio/e.mp3');
+            var f_audio = new Audio('audio/f.mp3');
+            var g_audio = new Audio('audio/g.mp3');
+            var h_audio = new Audio('audio/h.mp3');
+            var i_audio = new Audio('audio/i.mp3');
+            var j_audio = new Audio('audio/j.mp3');
+            var k_audio = new Audio('audio/k.mp3');
+            var l_audio = new Audio('audio/l.mp3');
+            var m_audio = new Audio('audio/m.mp3');
+            var n_audio = new Audio('audio/n.mp3');
+            var o_audio = new Audio('audio/o.mp3');
+            var p_audio = new Audio('audio/p.mp3');
+            var q_audio = new Audio('audio/q.mp3');
+            var r_audio = new Audio('audio/r.mp3');
+            var s_audio = new Audio('audio/s.mp3');
+            var t_audio = new Audio('audio/t.mp3');
+            var u_audio = new Audio('audio/u.mp3');
+            var v_audio = new Audio('audio/v.mp3');
+            var w_audio = new Audio('audio/w.mp3');
+            var x_audio = new Audio('audio/x.mp3');
+            var y_audio = new Audio('audio/y.mp3');
+            var z_audio = new Audio('audio/z.mp3');
+
+
+            // setup the canvas -- displaying the message
+            var canvas = d3.select("body")
+                        .append("svg")
+                        .attr("id", "canvas")
+                        .attr("width", width)
+                        .attr("height", height);
+
+            var letter_start = 100;
+            var letter_offset = 120;
+            var line_start = 180;
+            var line_offset = 170;
+            var letter_size = "150px";
+            var letter_fontfam = "helvetica";
+            var letter_fill = "LightGrey"
+
+            function play_audio() {
+                switch(msg[seq_cnt]) {
+                    case 'a': 
+                        a_audio.play();
+		    break;
+
+                    case 'b': 
+                        b_audio.play();
+		    break;
+
+                    case 'c': 
+                        c_audio.play();
+		    break;
+
+                    case 'd': 
+                        d_audio.play();
+		    break;
+
+                    case 'e': 
+                        e_audio.play();
+		    break;
+
+                    case 'f': 
+                        f_audio.play();
+		    break;
+
+                    case 'g': 
+                        g_audio.play();
+		    break;
+
+                    case 'h': 
+                        h_audio.play();
+		    break;
+
+                    case 'i': 
+                        i_audio.play();
+		    break;
+
+                    case 'j': 
+                        j_audio.play();
+		    break;
+
+                    case 'k': 
+                        k_audio.play();
+		    break;
+
+                    case 'l': 
+                        l_audio.play();
+		    break;
+
+                    case 'm': 
+                        m_audio.play();
+		    break;
+
+                    case 'n': 
+                        n_audio.play();
+		    break;
+
+                    case 'o': 
+                        o_audio.play();
+		    break;
+
+                    case 'p': 
+                        p_audio.play();
+		    break;
+
+                    case 'q': 
+                        q_audio.play();
+		    break;
+
+                    case 'r': 
+                        r_audio.play();
+		    break;
+
+                    case 's': 
+                        s_audio.play();
+		    break;
+
+                    case 't': 
+                        t_audio.play();
+		    break;
+
+                    case 'u': 
+                        u_audio.play();
+		    break;
+
+                    case 'v': 
+                        v_audio.play();
+		    break;
+
+                    case 'w': 
+                        w_audio.play();
+		    break;
+
+                    case 'x': 
+                        x_audio.play();
+		    break;
+
+                    case 'y': 
+                        y_audio.play();
+		    break;
+
+                    case 'z': 
+                        z_audio.play();
+		    break;
+
+		}
+	    }
+
+            // place the alphabet
+            canvas.append("text")
+                .attr("id", "letter_a")
+                .attr("y", line_start + (line_offset * 0))
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("a");
+
+            canvas.append("text")
+                .attr("id", "letter_b")
+                .attr("y", line_start + (line_offset * 0))
+                .attr("x", letter_start + (letter_offset * 1))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("b");
+
+            canvas.append("text")
+                .attr("id", "letter_c")
+                .attr("y", line_start + (line_offset * 0))
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("c");
+
+            canvas.append("text")
+                .attr("id", "letter_d")
+                .attr("y", line_start + (line_offset * 0))
+                .attr("x", letter_start + (letter_offset * 3))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("d");
+
+            canvas.append("text")
+                .attr("id", "letter_e")
+                .attr("y", line_start + (line_offset * 0))
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("e");
+
+            canvas.append("text")
+                .attr("id", "letter_f")
+                .attr("y", line_start + (line_offset * 1))
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("f");
+
+            canvas.append("text")
+                .attr("id", "letter_g")
+                .attr("y", line_start + (line_offset * 1))
+                .attr("x", letter_start + (letter_offset * 1))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("g");
+
+            canvas.append("text")
+                .attr("id", "letter_h")
+                .attr("y", line_start + (line_offset * 1))
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("h");
+
+            canvas.append("text")
+                .attr("id", "letter_i")
+                .attr("y", line_start + (line_offset * 1))
+                .attr("x", letter_start + (letter_offset * 3))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("i");
+
+            canvas.append("text")
+                .attr("id", "letter_j")
+                .attr("y", line_start + (line_offset * 1))
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("j");
+
+            canvas.append("text")
+                .attr("id", "letter_k")
+                .attr("y", line_start + (line_offset * 2))
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("k");
+
+            canvas.append("text")
+                .attr("id", "letter_l")
+                .attr("y", line_start + (line_offset * 2))
+                .attr("x", letter_start + (letter_offset * 1))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("l");
+
+            canvas.append("text")
+                .attr("id", "letter_m")
+                .attr("y", line_start + (line_offset * 2))
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("m");
+
+            canvas.append("text")
+                .attr("id", "letter_n")
+                .attr("y", line_start + (line_offset * 2))
+                .attr("x", letter_start + (letter_offset * 3))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("n");
+
+            canvas.append("text")
+                .attr("id", "letter_o")
+                .attr("y", line_start + (line_offset * 2))
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("o");
+
+            canvas.append("text")
+                .attr("id", "letter_p")
+                .attr("y", line_start + (line_offset * 3))
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("p");
+
+            canvas.append("text")
+                .attr("id", "letter_q")
+                .attr("y", line_start + (line_offset * 3))
+                .attr("x", letter_start + (letter_offset * 1))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("q");
+
+            canvas.append("text")
+                .attr("id", "letter_r")
+                .attr("y", line_start + (line_offset * 3))
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("r");
+
+            canvas.append("text")
+                .attr("id", "letter_s")
+                .attr("y", line_start + (line_offset * 3))
+                .attr("x", letter_start + (letter_offset * 3))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("s");
+
+            canvas.append("text")
+                .attr("id", "letter_t")
+                .attr("y", line_start + (line_offset * 3))
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("t");
+
+            canvas.append("text")
+                .attr("id", "letter_u")
+                .attr("y", line_start + (line_offset * 4))
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("u");
+
+            canvas.append("text")
+                .attr("id", "letter_v")
+                .attr("y", line_start + (line_offset * 4))
+                .attr("x", letter_start + (letter_offset * 1))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("v");
+
+            canvas.append("text")
+                .attr("id", "letter_w")
+                .attr("y", line_start + (line_offset * 4))
+                .attr("x", letter_start + (letter_offset * 2))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("w");
+
+            canvas.append("text")
+                .attr("id", "letter_x")
+                .attr("y", line_start + (line_offset * 4))
+                .attr("x", letter_start + (letter_offset * 3))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("x");
+
+            canvas.append("text")
+                .attr("id", "letter_y")
+                .attr("y", line_start + (line_offset * 4))
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("y");
+
+            canvas.append("text")
+                .attr("id", "letter_z")
+                .attr("y", line_start + (line_offset * 5) - 30)
+                .attr("x", letter_start + (letter_offset * 0))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("z");
+
+                
+            var nudge_up_time = 300;
+            var hold_up_time = 50;
+            var come_down_time = 300;
+            var tmp_pos = 0;
+
+            socket.onmessage = function (event) {
+                console.log(event.data);
+		if(seq_cnt < msg.length) {
+		    switch (event.data) {
+                       case "r1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+			     .attr("y", function() { tmp_pos = this.getAttribute("y"); return tmp_pos - 50; })
+		             .attr("fill", "FireBrick")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+			     .attr("y", function() { return tmp_pos; });
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "r0":
+		            // do nothing
+		       break;
+
+		       case "g1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+			     .attr("y", function() { tmp_pos = this.getAttribute("y"); return tmp_pos - 50; })
+		             .attr("fill", "ForestGreen")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+			     .attr("y", function() { return tmp_pos; });
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "g0":
+		           // do nothing
+		       break;
+
+		       case "b1":
+		           var letter_id = '#letter_' + msg[seq_cnt];
+			   d3.select(letter_id)
+		             .transition()
+			     .duration(nudge_up_time)
+			     .attr("y", function() { tmp_pos = this.getAttribute("y"); return tmp_pos - 50; })
+		             .attr("fill", "DodgerBlue")
+		             .transition()
+		             .delay(hold_up_time)
+			     .duration(come_down_time)
+			     .attr("y", function() { return tmp_pos; });
+		           play_audio();
+			   seq_cnt++;
+		       break;
+
+		       case "b0":
+		           // do nothing
+		       break;
+
+		       default:
+		    	console.log("Error: unknown command from the console");
+		    }
+		    
+	            if(seq_cnt == msg.length) {
+			    //setTimeout( function() { d3.selectAll("text")
+			    //                            .attr("fill", "LightGrey");
+		            //                         seq_cnt = 0;
+			    //	                    }, 750);
+	                    setTimeout( function() {
+	                                            var page = pages[Math.floor(Math.random()*pages.length)];
+	                                            while(page == 'alphabet.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+	                                            document.location.href = page; 
+	                                           }, 750);
+	            }
+		}
+            }
+
+
+            window.onbeforeunload = function(event){
+                socket.close();
+            }
+
+
+
+        </script>
+
+    </body>
+</html>
