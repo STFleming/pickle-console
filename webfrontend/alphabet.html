@@ -517,6 +517,13 @@
 		}
             }
 
+            // ultimate timeout -- move on if the user is not using it
+	    setTimeout( function() {
+	                            var page = pages[Math.floor(Math.random()*pages.length)];
+	                            while(page == 'alphabet.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+	                            document.location.href = page; 
+	                           }, 120000);
+
 
             window.onbeforeunload = function(event){
                 socket.close();
