@@ -10,9 +10,14 @@
         var width  = 750;
         var height = 750;
 
+        // score position
+        var score_x = 100;
+        var score_y = 700;
+
         // colours
         var snake_colour = 'blue';
-        var apple_colour = 'green';
+        var apple_colour = 'red';
+        var bad_apple_colour = 'green';
     
 	    // variables tracking the switch states
 	    var red_s = false;
@@ -26,6 +31,17 @@
         // xpos and ypos for the snake 
         var xpos = circle_start;
         var ypos = circle_start;
+    
+        // Converts from degrees to radians.
+        Math.radians = function(degrees) {
+          return degrees * Math.PI / 180;
+        };
+         
+        // Converts from radians to degrees.
+        Math.degrees = function(radians) {
+          return radians * 180 / Math.PI;
+        };
+
 
         var socket = new WebSocket("ws://192.168.0.24:8888");
 
@@ -68,6 +84,11 @@
 
         var velo_x = 1.0;
         var velo_y = 1.0;
+
+        var bad_apple_count = 0;
+        var bad_apple_velo_x = 1.5;
+        var bad_apple_velo_y = 1.5;
+
         var rotate_speed = 0.02; // I believe this should be in radians
         var snake_len = 50;
         var cur_snake = 0;
@@ -77,6 +98,10 @@
         var apple_y = 250;
         var apple_size = circle_size*1.5;
         var eatDist = 35;
+
+        // bad_apple pos
+        var bad_apple_x = Math.floor(Math.random()*width);
+        var bad_apple_y = Math.floor(Math.random()*height);
 
         // tracking where the snake bosy is currently
         var snake_x = [xpos];
@@ -91,8 +116,22 @@
 
         var growingCounter = 0; // counts down when the snake is growing
 
+
+        // add the score text
+        d3.select("body")
+          .append("text")
+          .attr("id", "score")
+          .attr("x", score_x)
+          .attr("y", score_y)
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "20px")
+          .attr("fill", "red")
+          .text("score:" + snake_len);
+
+
         function moveSnake() {
           if(!dead){
+
             // red button pressed rotate the velocity counter clockwise 
             if (red_s) {
                velo_x = (velo_x * Math.cos(-1.0*rotate_speed)) - (velo_y * Math.sin(-1.0*rotate_speed));  
@@ -189,7 +228,126 @@
                   .attr("stroke", apple_colour)
                   .style("fill", apple_colour);
             } 
+
+            // eating the bad apple logic
+            // distance between the apple and the snake
+            var distFromPoison = Math.sqrt((xpos - bad_apple_x)*(xpos - bad_apple_x) + (ypos - bad_apple_y)*(ypos - bad_apple_y));
+            if(distFromPoison <= eatDist) {
+                dead = true; 
+            } 
+
+            // Moving the green apple around
+            if(bad_apple_count < 75) {
+               bad_apple_count = bad_apple_count + 1; 
+            } else {
+                bad_apple_count = 0;
+                
+                var bad_apple_rotate_speed = (Math.random()*2.0) - 1.0;                
+ 
+                bad_apple_velo_x = (bad_apple_velo_x * Math.cos(-1.0*bad_apple_rotate_speed)) - (bad_apple_velo_y * Math.sin(-1.0*bad_apple_rotate_speed));  
+                bad_apple_velo_y = (bad_apple_velo_x * Math.sin(-1.0*bad_apple_rotate_speed)) + (bad_apple_velo_y * Math.cos(-1.0*bad_apple_rotate_speed));  
+
+            } 
+
+            // update the bad apple position
+            bad_apple_x = bad_apple_x + bad_apple_velo_x;
+            bad_apple_y = bad_apple_y + bad_apple_velo_y; 
+
+            // inject some velocity over time to stop it loosing
+            if(Math.sqrt(bad_apple_velo_x*bad_apple_velo_x + bad_apple_velo_y*bad_apple_velo_y) <= 0.99) {
+                bad_apple_velo_x *= 1.5;
+                bad_apple_velo_y *= 1.5;
+            }
+
+            // add some periodic boundary checks
+            if(bad_apple_x > width)
+                bad_apple_x = bad_apple_x - width;
+            if(bad_apple_x <= 0.0)
+                bad_apple_x = bad_apple_x + width;
+            if(bad_apple_y > height)
+                bad_apple_y = bad_apple_y - height;
+            if(bad_apple_y <= 0.0)
+                bad_apple_y = bad_apple_y + height;
+
+            d3.select("#bad_apple").remove();
+
+            // draw the bad_apple
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "bad_apple")
+              .attr("cx", bad_apple_x)
+              .attr("cy", bad_apple_y)
+              .attr("r", apple_size)
+              .style("opacity", "1.0")
+              .attr("stroke-width", 0.5)
+              .attr("stroke", bad_apple_colour)
+              .style("fill", bad_apple_colour);
+
+            // ------------------ end of moving the bad apple around ------------------------------
+
+
+          } else {
+            
+                velo_x = 1.0;
+                velo_y = 1.0;
+                rotate_speed = 0.02; // I believe this should be in radians
+                snake_len = 50;
+                cur_snake = 0;
+
+                // apple pos
+                apple_x = 100;
+                apple_y = 250;
+                apple_size = circle_size*1.5;
+                eatDist = 35;
+
+                // bad_apple pos
+                bad_apple_x = Math.floor(Math.random()*width);
+                bad_apple_y = Math.floor(Math.random()*height);
+
+                // tracking where the snake bosy is currently
+                snake_x = [xpos];
+                snake_y = [ypos];
+
+                // collision detection and growth rate
+                head_dist = 30; // the distance from the head where collision distance is ignored.
+                collisionThres = 15; // the distance where we say a collision has happened.
+                growthRate = 85;
+
+                dead = false;
+
+                growingCounter = 0; // counts down when the snake is growing
+
+                d3.selectAll("circle").remove();
+
+                d3.select("#canvas")
+                  .append("circle")
+                  .attr("id", "apple")
+                  .attr("cx", apple_x)
+                  .attr("cy", apple_y)
+                  .attr("r", apple_size)
+                  .style("opacity", "1.0")
+                  .attr("stroke-width", 0.5)
+                  .attr("stroke", apple_colour)
+                  .style("fill", apple_colour);
+
+                // draw the bad_apple
+                d3.select("#canvas")
+                  .append("circle")
+                  .attr("id", "bad_apple")
+                  .attr("cx", bad_apple_x)
+                  .attr("cy", bad_apple_y)
+                  .attr("r", apple_size)
+                  .style("opacity", "1.0")
+                  .attr("stroke-width", 0.5)
+                  .attr("stroke", bad_apple_colour)
+                  .style("fill", bad_apple_colour);
+
           }
+        
+          d3.select("#score")
+            .text("score: "+snake_len);
+
+
 	    }
 
 
@@ -216,6 +374,19 @@
               .attr("stroke-width", 0.5)
               .attr("stroke", apple_colour)
               .style("fill", apple_colour);
+
+
+            // draw the bad_apple
+            d3.select("#canvas")
+              .append("circle")
+              .attr("id", "bad_apple")
+              .attr("cx", bad_apple_x)
+              .attr("cy", bad_apple_y)
+              .attr("r", apple_size)
+              .style("opacity", "1.0")
+              .attr("stroke-width", 0.5)
+              .attr("stroke", bad_apple_colour)
+              .style("fill", bad_apple_colour);
 
 
              // end condition -- after 30 seconds load a new page
