@@ -44,30 +44,38 @@
                             }
                          });
                           
-            var ground = Bodies.rectangle(twidth/2, theight-20, twidth, 30, { isStatic: true });
-            var left_wall = Bodies.rectangle(0, theight, 20, 750, { isStatic: true });
-            var right_wall = Bodies.rectangle(twidth, theight, 20, 750, { isStatic: true });
+            var ground = Bodies.rectangle(twidth/2, theight-10, twidth, 20, { isStatic: true });
+            var left_wall = Bodies.rectangle(0, theight/2, 20, theight, { isStatic: true });
+            var right_wall = Bodies.rectangle(twidth, theight/2, 20, theight, { isStatic: true });
              
-	    //var bumper1 = Bodies.rectangle(twidth/2-250, 250, twidth*0.75, 10, { isStatic: true} );
-	    //Body.rotate(bumper1, Math.PI/12);
-	    //World.add(engine.world, [bumper1]);
+	    // x, y, length, width
+	    var bumper1 = Bodies.rectangle(twidth/2-250, 150, twidth-50, 10, { isStatic: true} );
+	    Body.rotate(bumper1, Math.PI/28);
+	    World.add(engine.world, [bumper1]);
 
-            // statically place a bunch of balls	    
-	    for(j=0; j<8; j++) {
-	    	for(i=0; i<100; i++) {
-                        var rand_x = Math.floor(Math.random() * twidth);
-                        var red_ball = Matter.Bodies.circle(rand_x, theight-(15*j), 10, {
-                          density: 0.005,
-                          friction: 0.01,
-                          frictionAir: 0.00001,
-                          restitution: 0.8,
-                          render: {
-                            fillStyle: 'red'
-                          }
-                        })
-                        World.add(engine.world, [red_ball]);
-	    	}
-	    }
+	    var bumper1 = Bodies.rectangle(twidth/2+250, 350, 850, 10, { isStatic: true} );
+	    Body.rotate(bumper1, -Math.PI/28);
+	    World.add(engine.world, [bumper1]);
+
+	    var bumper1 = Bodies.rectangle(twidth/2 - 390, 423, 400, 10, { isStatic: true} );
+	    Body.rotate(bumper1, -Math.PI/28);
+	    World.add(engine.world, [bumper1]);
+
+	    var bumper1 = Bodies.rectangle(twidth/2+350, 500, twidth-100, 10, { isStatic: true} );
+	    Body.rotate(bumper1, Math.PI/28);
+	    World.add(engine.world, [bumper1]);
+
+	    var bumper1 = Bodies.rectangle(twidth/2-250, 600, 900, 10, { isStatic: true} );
+	    Body.rotate(bumper1, Math.PI/100);
+	    World.add(engine.world, [bumper1]);
+
+	    var bumper1 = Bodies.rectangle(1095, 622, 313, 10, { isStatic: true} );
+	    Body.rotate(bumper1, Math.PI/100);
+	    World.add(engine.world, [bumper1]);
+
+	    var bumper1 = Bodies.rectangle(twidth/2-250, 720, 1150, 10, { isStatic: true} );
+	    Body.rotate(bumper1, -Math.PI/28);
+	    World.add(engine.world, [bumper1]);
 
 
             socket.onmessage = function (event) {
@@ -105,7 +113,6 @@
 
             var intervalId = setInterval(addCircles, 150);
 
-            //World.add(engine.world, [ballA, ballB, ground]);
             World.add(engine.world, [ground, left_wall, right_wall]);
              
             Engine.run(engine);
@@ -115,9 +122,8 @@
 
                     // the red button has been pressed
                     if(red_s) {
-                        var rand_x = Math.floor(Math.random() * twidth);
-                        var red_ball = Matter.Bodies.circle(rand_x, 5, 10, {
-                          density: 0.005,
+                        var red_ball = Matter.Bodies.circle(30, 0, 5, {
+                          density: 0.05,
                           friction: 0.01,
                           frictionAir: 0.00001,
                           restitution: 0.8,
@@ -131,9 +137,8 @@
                     
                     // the green button has been pressed
                     if(green_s) {
-                        var rand_x = Math.floor(Math.random() * twidth);
-                        var green_ball = Matter.Bodies.circle(rand_x, 5, 60, {
-                          density: 0.32,
+                        var green_ball = Matter.Bodies.circle(30, 0, 15, {
+                          density: 0.05,
                           friction: 0.01,
                           frictionAir: 0.00001,
                           restitution: 0.8,
@@ -147,9 +152,8 @@
                 
                     // the blue button has been pressed
                     if(blue_s) {
-                        var rand_x = Math.floor(Math.random() * twidth);
-                        var blue_ball = Matter.Bodies.circle(rand_x, 5, 40, {
-                          density: 0.32,
+                        var blue_ball = Matter.Bodies.circle(30, 0, 45, {
+                          density: 0.05,
                           friction: 0.01,
                           frictionAir: 0.00001,
                           restitution: 0.8,
@@ -166,9 +170,9 @@
              // end condition -- after 30 seconds load a new page
              setTimeout( function() {
                                       var page = pages[Math.floor(Math.random()*pages.length)];
-                                      while(page == 'bouncing_balls.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
+                                      while(page == 'ball_sorter.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
                                       document.location.href = page;
-                                    }, 30000);
+                                    }, 120000);
 
         </script>
 

@@ -15,16 +15,16 @@
 
             var socket = new WebSocket("ws://192.168.0.31:8888");
 
-            var msg = ['d', 'y', 'l', 'a', 'n'];
+            var msg = ['s', 'h', 'a', 'n', 'e'];
             var seq_cnt = 0; // counts where we are in the sequence
 
             // audio files 
-            var d_audio = new Audio('audio/d.mp3');
-            var y_audio = new Audio('audio/y.mp3');
-            var l_audio = new Audio('audio/l.mp3');
+            var s_audio = new Audio('audio/s.mp3');
+            var h_audio = new Audio('audio/h.mp3');
             var a_audio = new Audio('audio/a.mp3');
             var n_audio = new Audio('audio/n.mp3');
-            var complete_audio = new Audio('audio/dylan.mp3');
+            var e_audio = new Audio('audio/e.mp3');
+            var complete_audio = new Audio('audio/shane.mp3');
             var complete_audio_played = false;
 
 
@@ -43,16 +43,12 @@
 
             function play_audio() {
                 switch(msg[seq_cnt]) {
-                    case 'd': 
-                        d_audio.play();
+                    case 's': 
+                        s_audio.play();
 		    break;
 
-                    case 'y': 
-                        y_audio.play();
-		    break;
-
-                    case 'l': 
-                        l_audio.play();
+                    case 'h': 
+                        h_audio.play();
 		    break;
 
                     case 'a': 
@@ -62,44 +58,38 @@
                     case 'n': 
                         n_audio.play();
 		    break;
+
+                    case 'e': 
+                        e_audio.play();
+		    break;
 		}
 	    }
 
-            // D Y L A N
+            // S H A N E
             canvas.append("text")
-                .attr("id", "letter_d")
+                .attr("id", "letter_s")
                 .attr("y", height/2)
                 .attr("x", letter_start + (letter_offset * 0))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
-                .text("d");
+                .text("s");
 
             canvas.append("text")
-                .attr("id", "letter_y")
+                .attr("id", "letter_h")
                 .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 1) + 20)
+                .attr("x", letter_start + (letter_offset * 1))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
-                .text("y");
-
-            canvas.append("text")
-                .attr("id", "letter_l")
-                .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 2))
-                .attr("font-family", letter_fontfam)
-	        .attr('text-anchor', 'middle')
-                .attr("font-size", letter_size)
-                .attr("fill", letter_fill)
-                .text("l");
+                .text("h");
 
             canvas.append("text")
                 .attr("id", "letter_a")
                 .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 3) - 20)
+                .attr("x", letter_start + (letter_offset * 2))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
@@ -109,12 +99,22 @@
             canvas.append("text")
                 .attr("id", "letter_n")
                 .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 4))
+                .attr("x", letter_start + (letter_offset * 3))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
                 .text("n");
+
+            canvas.append("text")
+                .attr("id", "letter_e")
+                .attr("y", height/2)
+                .attr("x", letter_start + (letter_offset * 4))
+                .attr("font-family", letter_fontfam)
+	        .attr('text-anchor', 'middle')
+                .attr("font-size", letter_size)
+                .attr("fill", letter_fill)
+                .text("e");
 
                 
             var nudge_up_time = 300;
@@ -191,7 +191,7 @@
 			 //setInterval(function() { if(!complete_audio_played) { complete_audio.play(); complete_audio_played=true; }}, 50 );
 			 var end_animation_delay = 500;
 			 var animation_letter_rate = 150;
-                         d3.select('#letter_d')
+                         d3.select('#letter_s')
 			   .transition()
 			   .delay(end_animation_delay)
 			   .duration(nudge_up_time)
@@ -202,7 +202,7 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 
-                         d3.select('#letter_y')
+                         d3.select('#letter_h')
 			   .transition()
 			   .delay(end_animation_delay + animation_letter_rate*1)
 			   .duration(nudge_up_time)
@@ -213,7 +213,7 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 
-                         d3.select('#letter_l')
+                         d3.select('#letter_a')
 			   .transition()
 			   .delay(end_animation_delay + animation_letter_rate*2)
 			   .duration(nudge_up_time)
@@ -224,7 +224,7 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 
-                         d3.select('#letter_a')
+                         d3.select('#letter_n')
 			   .transition()
 			   .delay(end_animation_delay + animation_letter_rate*3)
 			   .duration(nudge_up_time)
@@ -235,7 +235,7 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 			   
-                         d3.select('#letter_n')
+                         d3.select('#letter_e')
 			   .transition()
 			   .delay(end_animation_delay + animation_letter_rate*4)
 			   .duration(nudge_up_time)
@@ -251,7 +251,7 @@
 
 			   // change navigation to a random page after a set amount of time at the end of the sequence
 			   setTimeout(function() {  var page = pages[Math.floor(Math.random()*pages.length)];
-	                                            while(page == 'index.html') { pages[Math.floor(Math.random()*pages.length)]; }
+                                                    while(page == 'shane.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
 	                                            document.location.href = page; 
 	                                         }, end_animation_delay + animation_letter_rate*6);
 		    }

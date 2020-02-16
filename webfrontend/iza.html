@@ -15,16 +15,14 @@
 
             var socket = new WebSocket("ws://192.168.0.31:8888");
 
-            var msg = ['d', 'y', 'l', 'a', 'n'];
+            var msg = ['i', 'z', 'a'];
             var seq_cnt = 0; // counts where we are in the sequence
 
             // audio files 
-            var d_audio = new Audio('audio/d.mp3');
-            var y_audio = new Audio('audio/y.mp3');
-            var l_audio = new Audio('audio/l.mp3');
+            var i_audio = new Audio('audio/i.mp3');
+            var z_audio = new Audio('audio/z.mp3');
             var a_audio = new Audio('audio/a.mp3');
-            var n_audio = new Audio('audio/n.mp3');
-            var complete_audio = new Audio('audio/dylan.mp3');
+            var complete_audio = new Audio('audio/iza.mp3');
             var complete_audio_played = false;
 
 
@@ -43,79 +41,51 @@
 
             function play_audio() {
                 switch(msg[seq_cnt]) {
-                    case 'd': 
-                        d_audio.play();
+                    case 'i': 
+                        i_audio.play();
 		    break;
 
-                    case 'y': 
-                        y_audio.play();
-		    break;
-
-                    case 'l': 
-                        l_audio.play();
+                    case 'z': 
+                        z_audio.play();
 		    break;
 
                     case 'a': 
                         a_audio.play();
 		    break;
 
-                    case 'n': 
-                        n_audio.play();
-		    break;
 		}
 	    }
 
-            // D Y L A N
+            // I Z A
             canvas.append("text")
-                .attr("id", "letter_d")
+                .attr("id", "letter_i")
                 .attr("y", height/2)
                 .attr("x", letter_start + (letter_offset * 0))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
-                .text("d");
+                .text("i");
 
             canvas.append("text")
-                .attr("id", "letter_y")
+                .attr("id", "letter_z")
                 .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 1) + 20)
+                .attr("x", letter_start + (letter_offset * 1))
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
-                .text("y");
-
-            canvas.append("text")
-                .attr("id", "letter_l")
-                .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 2))
-                .attr("font-family", letter_fontfam)
-	        .attr('text-anchor', 'middle')
-                .attr("font-size", letter_size)
-                .attr("fill", letter_fill)
-                .text("l");
+                .text("z");
 
             canvas.append("text")
                 .attr("id", "letter_a")
                 .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 3) - 20)
+                .attr("x", letter_start + (letter_offset * 2) + 20)
                 .attr("font-family", letter_fontfam)
 	        .attr('text-anchor', 'middle')
                 .attr("font-size", letter_size)
                 .attr("fill", letter_fill)
                 .text("a");
-
-            canvas.append("text")
-                .attr("id", "letter_n")
-                .attr("y", height/2)
-                .attr("x", letter_start + (letter_offset * 4))
-                .attr("font-family", letter_fontfam)
-	        .attr('text-anchor', 'middle')
-                .attr("font-size", letter_size)
-                .attr("fill", letter_fill)
-                .text("n");
-
                 
             var nudge_up_time = 300;
             var hold_up_time = 50;
@@ -191,7 +161,7 @@
 			 //setInterval(function() { if(!complete_audio_played) { complete_audio.play(); complete_audio_played=true; }}, 50 );
 			 var end_animation_delay = 500;
 			 var animation_letter_rate = 150;
-                         d3.select('#letter_d')
+                         d3.select('#letter_i')
 			   .transition()
 			   .delay(end_animation_delay)
 			   .duration(nudge_up_time)
@@ -202,7 +172,7 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 
-                         d3.select('#letter_y')
+                         d3.select('#letter_z')
 			   .transition()
 			   .delay(end_animation_delay + animation_letter_rate*1)
 			   .duration(nudge_up_time)
@@ -213,31 +183,9 @@
 		           .attr("y", height/2)
 		           .attr("fill", "LightGrey");
 
-                         d3.select('#letter_l')
-			   .transition()
-			   .delay(end_animation_delay + animation_letter_rate*2)
-			   .duration(nudge_up_time)
-		           .attr("y", height/2 - 50)
-		           .transition()
-		           .delay(hold_up_time)
-			   .duration(come_down_time)
-		           .attr("y", height/2)
-		           .attr("fill", "LightGrey");
-
                          d3.select('#letter_a')
 			   .transition()
-			   .delay(end_animation_delay + animation_letter_rate*3)
-			   .duration(nudge_up_time)
-		           .attr("y", height/2 - 50)
-		           .transition()
-		           .delay(hold_up_time)
-			   .duration(come_down_time)
-		           .attr("y", height/2)
-		           .attr("fill", "LightGrey");
-			   
-                         d3.select('#letter_n')
-			   .transition()
-			   .delay(end_animation_delay + animation_letter_rate*4)
+			   .delay(end_animation_delay + animation_letter_rate*2)
 			   .duration(nudge_up_time)
 		           .attr("y", height/2 - 50)
 		           .transition()
@@ -251,7 +199,7 @@
 
 			   // change navigation to a random page after a set amount of time at the end of the sequence
 			   setTimeout(function() {  var page = pages[Math.floor(Math.random()*pages.length)];
-	                                            while(page == 'index.html') { pages[Math.floor(Math.random()*pages.length)]; }
+                                                    while(page == 'iza.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
 	                                            document.location.href = page; 
 	                                         }, end_animation_delay + animation_letter_rate*6);
 		    }

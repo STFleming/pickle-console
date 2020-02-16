@@ -7,8 +7,8 @@
     <body>
 
         <script>
-            var width  = 1024;
-            var height = 1024;
+            var width  = 2048;
+            var height = 4096;
 
 	    var text_loc_x = width/2;
             var text_loc_y = height/2;
@@ -55,10 +55,10 @@
                         .attr("height", height);
 
             var letter_start = 100;
-            var letter_offset = 120;
+            var letter_offset = 240;
             var line_start = 180;
-            var line_offset = 170;
-            var letter_size = "150px";
+            var line_offset = 240;
+            var letter_size = "250px";
             var letter_fontfam = "helvetica";
             var letter_fill = "LightGrey"
 
@@ -522,7 +522,7 @@
 	                            var page = pages[Math.floor(Math.random()*pages.length)];
 	                            while(page == 'alphabet.html') { page = pages[Math.floor(Math.random()*pages.length)]; }
 	                            document.location.href = page; 
-	                           }, 60000);
+	                           }, 30000);
 
 
             window.onbeforeunload = function(event){
