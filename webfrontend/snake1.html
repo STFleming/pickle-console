@@ -7,17 +7,20 @@
     <body>
 
         <script>
-        var width  = 1200;
-        var height = 2400;
+        var width  = 800;
+        var height = 700;
 
         // score position
         var score_x = 100;
         var score_y = 700;
+        
+        // the saved high_score
+        var high_score = 0;
 
         // colours
         var snake_colour = 'blue';
-        var apple_colour = 'red';
-        var bad_apple_colour = 'green';
+        var apple_colour = 'green';
+        var bad_apple_colour = 'red';
     
 	    // variables tracking the switch states
 	    var red_s = false;
@@ -26,7 +29,7 @@
 
 	    // circle start
         var circle_start = 50;
-        var circle_size = 10;
+        var circle_size = 8;
 
         // xpos and ypos for the snake 
         var xpos = circle_start;
@@ -110,23 +113,11 @@
         // collision detection and growth rate
         var head_dist = 30; // the distance from the head where collision distance is ignored.
         var collisionThres = 15; // the distance where we say a collision has happened.
-        var growthRate = 85;
+        var growthRate = 250;
 
         var dead = false;
 
         var growingCounter = 0; // counts down when the snake is growing
-
-
-        // add the score text
-        d3.select("body")
-          .append("text")
-          .attr("id", "score")
-          .attr("x", score_x)
-          .attr("y", score_y)
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "20px")
-          .attr("fill", "red")
-          .text("score:" + snake_len);
 
 
         function moveSnake() {
@@ -291,6 +282,13 @@
                 velo_x = 1.0;
                 velo_y = 1.0;
                 rotate_speed = 0.02; // I believe this should be in radians
+
+                if(snake_len > high_score) {
+                        high_score = snake_len;
+                        d3.select("#high_score").text("High Score: "+high_score);
+                }
+
+
                 snake_len = 50;
                 cur_snake = 0;
 
@@ -311,7 +309,7 @@
                 // collision detection and growth rate
                 head_dist = 30; // the distance from the head where collision distance is ignored.
                 collisionThres = 15; // the distance where we say a collision has happened.
-                growthRate = 85;
+                growthRate = 250;
 
                 dead = false;
 
@@ -361,6 +359,39 @@
                         .attr("id", "canvas")
                         .attr("width", width)
                         .attr("height", height); 
+
+            // draw a border for the world
+            d3.select("#canvas")
+               .append("rect")
+               .attr("id", "border")
+               .attr("x", 0)
+               .attr("y", 0)
+               .attr("width", width)
+               .attr("height", height)
+               .attr("fill", "LightGray");
+
+            // add the score text
+            d3.select("#canvas")
+              .append("text")
+              .attr("id", "score")
+              .attr("x", 20)
+              .attr("y", height - 20)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "20px")
+              .attr("fill", "red")
+              .text("score:" + snake_len);
+
+            // add the score text
+            d3.select("#canvas")
+              .append("text")
+              .attr("id", "high_score")
+              .attr("x", width - 200)
+              .attr("y", height - 20)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "20px")
+              .attr("fill", "red")
+              .text("High Score:" + high_score);
+
 
 
             // draw the apple
